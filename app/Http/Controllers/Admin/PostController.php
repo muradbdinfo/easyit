@@ -12,10 +12,17 @@ class PostController extends Controller
 {
     public function index()
     {
+        $posts = Post::with('category:id,name', 'user:id,name')
+            ->latest()
+            ->paginate(15);
+
+        $posts->getCollection()->transform(function ($post) {
+            $post->featured_image_url = $post->getFirstMediaUrl('featured_image');
+            return $post;
+        });
+
         return Inertia::render('Admin/Posts/Index', [
-            'posts' => Post::with('category:id,name', 'user:id,name')
-                ->latest()
-                ->paginate(15),
+            'posts' => $posts,
         ]);
     }
 
@@ -62,8 +69,11 @@ class PostController extends Controller
 
     public function edit(Post $post)
     {
+        $post->load('tags:id,name');
+        $post->featured_image_url = $post->getFirstMediaUrl('featured_image');
+
         return Inertia::render('Admin/Posts/Edit', [
-            'post' => $post->load('tags:id,name', 'media'),
+            'post' => $post,
             'categories' => Category::orderBy('name')->get(['id', 'name']),
             'tags' => Tag::orderBy('name')->get(['id', 'name']),
         ]);
