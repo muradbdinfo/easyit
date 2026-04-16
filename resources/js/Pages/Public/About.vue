@@ -22,7 +22,7 @@ defineProps({ page: Object, teamMembers: Array })
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="prose prose-lg max-w-none">
                     <h2 class="text-2xl font-bold text-gray-900">Our Story</h2>
-                    <p class="text-gray-600 mt-4">Easy IT was founded with a simple mission: to make professional IT services accessible to businesses in Sandwip, Chittagong, and across Bangladesh. We started as a small network solutions provider and have grown into a full-service IT company offering everything from web hosting to custom software development.</p>
+                    <p class="text-gray-600 mt-4">Easy IT was founded with a simple mission: to make professional IT services accessible to businesses in Katalganj, chattogram, and across Bangladesh. We started as a small network solutions provider and have grown into a full-service IT company offering everything from web hosting to custom software development.</p>
                     <h2 class="text-2xl font-bold text-gray-900 mt-10">Our Mission</h2>
                     <p class="text-gray-600 mt-4">To empower businesses with reliable, affordable, and innovative technology solutions. We believe every business, regardless of size, deserves world-class IT infrastructure and support.</p>
                     <h2 class="text-2xl font-bold text-gray-900 mt-10">Our Values</h2>
