@@ -1,149 +1,123 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Reset Your Password</title>
-    <!--[if mso]>
-    <noscript>
-        <xml>
-            <o:OfficeDocumentSettings>
-                <o:PixelsPerInch>96</o:PixelsPerInch>
-            </o:OfficeDocumentSettings>
-        </xml>
-    </noscript>
-    <![endif]-->
-</head>
-<body style="margin: 0; padding: 0; background-color: #f1f5f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; -webkit-font-smoothing: antialiased;">
+<script setup>
+import { Head, Link, useForm } from '@inertiajs/vue3'
 
-    <!-- Wrapper -->
-    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #f1f5f9;">
-        <tr>
-            <td align="center" style="padding: 40px 16px;">
+const props = defineProps({
+    email: { type: String, required: true },
+    token: { type: String, required: true },
+})
 
-                <!-- Main Card -->
-                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width: 520px; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,0.06);">
+const form = useForm({
+    token: props.token,
+    email: props.email,
+    password: '',
+    password_confirmation: '',
+})
 
-                    <!-- Header Banner -->
-                    <tr>
-                        <td style="background: linear-gradient(135deg, #020617 0%, #0f172a 50%, #083344 100%); padding: 40px 40px 36px; text-align: center;">
-                            <!-- Logo -->
-                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin: 0 auto 20px;">
-                                <tr>
-                                    <td style="background: linear-gradient(135deg, #06b6d4, #0e7490); width: 44px; height: 44px; border-radius: 12px; text-align: center; vertical-align: middle;">
-                                        <span style="color: #ffffff; font-weight: 800; font-size: 20px; line-height: 44px;">E</span>
-                                    </td>
-                                    <td style="padding-left: 12px;">
-                                        <span style="color: #ffffff; font-size: 22px; font-weight: 700;">Easy </span>
-                                        <span style="color: #22d3ee; font-size: 22px; font-weight: 700;">IT</span>
-                                    </td>
-                                </tr>
-                            </table>
-                            <!-- Lock Icon -->
-                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin: 0 auto 16px;">
-                                <tr>
-                                    <td style="background-color: rgba(6, 182, 212, 0.15); width: 64px; height: 64px; border-radius: 50%; text-align: center; vertical-align: middle;">
-                                        <img src="https://img.icons8.com/ios-filled/50/22d3ee/lock-2.png" alt="Lock" width="28" height="28" style="display: inline-block; vertical-align: middle;" />
-                                    </td>
-                                </tr>
-                            </table>
-                            <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: 700; letter-spacing: -0.3px;">
-                                Password Reset Request
-                            </h1>
-                        </td>
-                    </tr>
+const submit = () => {
+    form.post(route('password.store'), {
+        onFinish: () => form.reset('password', 'password_confirmation'),
+    })
+}
+</script>
 
-                    <!-- Body Content -->
-                    <tr>
-                        <td style="padding: 36px 40px 12px;">
-                            <p style="margin: 0 0 6px; color: #0f172a; font-size: 16px; font-weight: 600;">
-                                Hi {{ $name ?? 'there' }},
-                            </p>
-                            <p style="margin: 0; color: #64748b; font-size: 14px; line-height: 22px;">
-                                We received a request to reset the password for your Easy IT account. Click the button below to choose a new password.
-                            </p>
-                        </td>
-                    </tr>
+<template>
+    <div class="min-h-screen flex">
+        <Head><title>Reset Password - Easy IT</title></Head>
 
-                    <!-- CTA Button -->
-                    <tr>
-                        <td style="padding: 28px 40px;">
-                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin: 0 auto;">
-                                <tr>
-                                    <td style="border-radius: 12px; background: linear-gradient(135deg, #06b6d4, #0891b2); text-align: center;">
-                                        <a href="{{ $url }}" target="_blank" style="display: inline-block; padding: 14px 40px; color: #ffffff; font-size: 14px; font-weight: 700; text-decoration: none; letter-spacing: 0.3px;">
-                                            Reset My Password
-                                        </a>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
+        <!-- Left: Branding -->
+        <div class="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-navy-950 via-navy-900 to-brand-950 relative overflow-hidden">
+            <div class="absolute inset-0 opacity-[0.03]" style="background-image: linear-gradient(rgba(255,255,255,.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px); background-size: 60px 60px;"></div>
+            <div class="absolute top-1/4 -left-20 w-80 h-80 bg-brand-500/10 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-1/4 -right-20 w-80 h-80 bg-brand-500/5 rounded-full blur-3xl"></div>
 
-                    <!-- Expiry Notice -->
-                    <tr>
-                        <td style="padding: 0 40px;">
-                            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #f0fdfa; border-radius: 12px; border: 1px solid #ccfbf1;">
-                                <tr>
-                                    <td style="padding: 14px 20px;">
-                                        <p style="margin: 0; color: #0d9488; font-size: 13px; line-height: 20px; text-align: center;">
-                                            ⏱ This link expires in <strong>{{ $expireMinutes ?? 60 }} minutes</strong>
-                                        </p>
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
+            <div class="relative flex flex-col justify-center px-12 lg:px-16">
+                <Link href="/" class="flex items-center gap-3 mb-12">
+                    <div class="w-10 h-10 bg-gradient-to-br from-brand-500 to-brand-700 rounded-xl flex items-center justify-center">
+                        <span class="text-white font-extrabold">E</span>
+                    </div>
+                    <span class="text-2xl font-bold text-white">Easy <span class="text-brand-400">IT</span></span>
+                </Link>
 
-                    <!-- Security Note -->
-                    <tr>
-                        <td style="padding: 24px 40px 0;">
-                            <p style="margin: 0; color: #94a3b8; font-size: 13px; line-height: 20px;">
-                                If you didn't request this, you can safely ignore this email — your password will remain unchanged.
-                            </p>
-                        </td>
-                    </tr>
+                <h1 class="text-3xl lg:text-4xl font-extrabold text-white leading-tight mb-4">
+                    Set Your New<br/><span class="text-brand-400">Password</span>
+                </h1>
+                <p class="text-gray-400 leading-relaxed max-w-md mb-8">
+                    Choose a strong password to keep your account secure. Once updated, you'll be signed in automatically.
+                </p>
 
-                    <!-- Divider -->
-                    <tr>
-                        <td style="padding: 28px 40px 0;">
-                            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 0;" />
-                        </td>
-                    </tr>
+                <div class="bg-white/5 rounded-2xl border border-white/10 p-6">
+                    <h3 class="text-sm font-bold text-white mb-3">Password tips:</h3>
+                    <div class="space-y-2.5">
+                        <div class="flex items-center gap-2 text-sm text-gray-300">
+                            <svg class="w-4 h-4 text-brand-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            Use at least 8 characters
+                        </div>
+                        <div class="flex items-center gap-2 text-sm text-gray-300">
+                            <svg class="w-4 h-4 text-brand-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            Mix letters, numbers & symbols
+                        </div>
+                        <div class="flex items-center gap-2 text-sm text-gray-300">
+                            <svg class="w-4 h-4 text-brand-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                            Avoid reusing old passwords
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                    <!-- Fallback URL -->
-                    <tr>
-                        <td style="padding: 20px 40px 32px;">
-                            <p style="margin: 0 0 8px; color: #94a3b8; font-size: 12px;">
-                                Having trouble with the button? Copy and paste this URL into your browser:
-                            </p>
-                            <p style="margin: 0; word-break: break-all;">
-                                <a href="{{ $url }}" style="color: #0891b2; font-size: 12px; text-decoration: underline;">{{ $url }}</a>
-                            </p>
-                        </td>
-                    </tr>
+        <!-- Right: Reset Password Form -->
+        <div class="w-full lg:w-1/2 flex items-center justify-center px-4 sm:px-8 py-12 bg-gray-50">
+            <div class="w-full max-w-md">
+                <!-- Mobile logo -->
+                <div class="lg:hidden flex items-center gap-2.5 mb-8">
+                    <Link href="/" class="flex items-center gap-2.5">
+                        <div class="w-9 h-9 bg-gradient-to-br from-brand-500 to-brand-700 rounded-xl flex items-center justify-center">
+                            <span class="text-white font-extrabold text-sm">E</span>
+                        </div>
+                        <span class="text-lg font-bold text-navy-900">Easy <span class="text-brand-500">IT</span></span>
+                    </Link>
+                </div>
 
-                </table>
-                <!-- End Main Card -->
+                <h2 class="text-2xl font-extrabold text-navy-900 mb-1">Reset your password</h2>
+                <p class="text-sm text-gray-500 mb-8">
+                    Enter your new password below to regain access.
+                </p>
 
-                <!-- Footer -->
-                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width: 520px;">
-                    <tr>
-                        <td style="padding: 24px 16px; text-align: center;">
-                            <p style="margin: 0 0 4px; color: #94a3b8; font-size: 12px;">
-                                © {{ date('Y') }} Easy IT. All rights reserved.
-                            </p>
-                            <p style="margin: 0; color: #cbd5e1; font-size: 11px;">
-                                This is an automated message — please do not reply.
-                            </p>
-                        </td>
-                    </tr>
-                </table>
+                <form @submit.prevent="submit" class="space-y-5">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Email</label>
+                        <input v-model="form.email" type="email" required autofocus autocomplete="username"
+                            :class="[form.errors.email ? 'border-red-300 ring-red-100' : 'border-gray-200 focus:border-brand-500 focus:ring-brand-100', 'block w-full rounded-xl border px-4 py-3 text-sm shadow-sm ring-2 ring-transparent transition-all']"
+                            placeholder="you@company.com" />
+                        <p v-if="form.errors.email" class="mt-1 text-xs text-red-600">{{ form.errors.email }}</p>
+                    </div>
 
-            </td>
-        </tr>
-    </table>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">New Password</label>
+                        <input v-model="form.password" type="password" required autocomplete="new-password"
+                            :class="[form.errors.password ? 'border-red-300 ring-red-100' : 'border-gray-200 focus:border-brand-500 focus:ring-brand-100', 'block w-full rounded-xl border px-4 py-3 text-sm shadow-sm ring-2 ring-transparent transition-all']"
+                            placeholder="Min 8 characters" />
+                        <p v-if="form.errors.password" class="mt-1 text-xs text-red-600">{{ form.errors.password }}</p>
+                    </div>
 
-</body>
-</html>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Confirm Password</label>
+                        <input v-model="form.password_confirmation" type="password" required autocomplete="new-password"
+                            :class="[form.errors.password_confirmation ? 'border-red-300 ring-red-100' : 'border-gray-200 focus:border-brand-500 focus:ring-brand-100', 'block w-full rounded-xl border px-4 py-3 text-sm shadow-sm ring-2 ring-transparent transition-all']"
+                            placeholder="••••••••" />
+                        <p v-if="form.errors.password_confirmation" class="mt-1 text-xs text-red-600">{{ form.errors.password_confirmation }}</p>
+                    </div>
+
+                    <button type="submit" :disabled="form.processing"
+                        class="w-full rounded-xl bg-gradient-to-r from-brand-500 to-brand-600 px-4 py-3.5 text-sm font-bold text-white hover:from-brand-600 hover:to-brand-700 transition-all shadow-lg shadow-brand-500/25 hover:shadow-brand-500/40 disabled:opacity-50">
+                        {{ form.processing ? 'Resetting...' : 'Reset Password' }}
+                    </button>
+                </form>
+
+                <div class="mt-8 text-center">
+                    <Link href="/login" class="text-xs text-gray-400 hover:text-gray-600 transition">← Back to sign in</Link>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

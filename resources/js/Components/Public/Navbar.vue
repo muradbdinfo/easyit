@@ -11,6 +11,13 @@ const services = computed(() => page.props.navigation?.services || [])
 const user = computed(() => page.props.auth?.user)
 const isActive = (path) => page.url === path || (path !== '/' && page.url.startsWith(path))
 
+const logoUrl = computed(() => {
+    const logo = settings.value.company_logo
+    if (!logo) return null
+    if (logo.startsWith('http')) return logo
+    return `/storage/${logo}`
+})
+
 const onScroll = () => { scrolled.value = window.scrollY > 20 }
 onMounted(() => window.addEventListener('scroll', onScroll))
 onUnmounted(() => window.removeEventListener('scroll', onScroll))
@@ -21,14 +28,25 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16 lg:h-20">
                 <!-- Logo -->
-                <Link href="/" class="flex items-center gap-2.5 group">
-                    <div class="w-9 h-9 bg-gradient-to-br from-brand-500 to-brand-700 rounded-xl flex items-center justify-center shadow-lg shadow-brand-500/20">
-                        <span class="text-white font-extrabold text-sm">E</span>
-                    </div>
-                    <div>
-                        <span :class="[scrolled ? 'text-navy-900' : 'text-white', 'text-lg font-bold tracking-tight transition-colors']">Easy</span>
-                        <span class="text-brand-500 text-lg font-bold tracking-tight">IT</span>
-                    </div>
+                <Link href="/" class="flex items-center gap-2.5 group shrink-0">
+                    <template v-if="logoUrl">
+                        <div class="bg-white rounded-2xl shadow-md p-1.5 flex items-center justify-center">
+                            <img
+                                :src="logoUrl"
+                                :alt="settings.company_name || 'Easy IT'"
+                                class="h-10 w-10 lg:h-12 lg:w-12 object-contain rounded-xl"
+                            />
+                        </div>
+                    </template>
+                    <template v-else>
+                        <div class="w-9 h-9 bg-gradient-to-br from-brand-500 to-brand-700 rounded-xl flex items-center justify-center shadow-lg shadow-brand-500/20">
+                            <span class="text-white font-extrabold text-sm">E</span>
+                        </div>
+                        <div>
+                            <span :class="[scrolled ? 'text-navy-900' : 'text-white', 'text-lg font-bold tracking-tight transition-colors']">Easy</span>
+                            <span class="text-brand-500 text-lg font-bold tracking-tight">IT</span>
+                        </div>
+                    </template>
                 </Link>
 
                 <!-- Desktop nav -->
@@ -73,7 +91,6 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 
                 <!-- Right side: Auth + CTA -->
                 <div class="flex items-center gap-2 sm:gap-3">
-                    <!-- Logged in user -->
                     <template v-if="user">
                         <Link :href="user.is_admin ? '/admin/dashboard' : '/client/dashboard'"
                             :class="[scrolled ? 'text-gray-600 hover:text-brand-600' : 'text-gray-200 hover:text-white', 'hidden sm:inline-flex items-center gap-2 px-3 py-2 text-[13px] font-semibold transition-colors']">
@@ -83,8 +100,6 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
                             {{ user.is_admin ? 'Admin Panel' : 'My Portal' }}
                         </Link>
                     </template>
-
-                    <!-- Not logged in -->
                     <template v-else>
                         <Link href="/login" :class="[scrolled ? 'text-gray-600 hover:text-brand-600' : 'text-gray-200 hover:text-white', 'hidden sm:inline-flex items-center gap-1.5 px-3 py-2 text-[13px] font-semibold transition-colors']">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>

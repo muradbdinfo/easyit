@@ -39,8 +39,8 @@ Route::get('/services/{service:slug}', [ServiceController::class, 'show'])->name
 Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
 Route::get('/projects/{project:slug}', [ProjectController::class, 'show'])->name('projects.show');
 Route::get('/blog', [PostController::class, 'index'])->name('blog.index');
-Route::get('/blog/{post:slug}', [PostController::class, 'show'])->name('blog.show');
 Route::get('/blog/category/{category:slug}', [PostController::class, 'byCategory'])->name('blog.category');
+Route::get('/blog/{post:slug}', [PostController::class, 'show'])->name('blog.show');
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
 Route::get('/service-request', [PageController::class, 'serviceRequest'])->name('service-request');
 Route::get('/faq', [PageController::class, 'faq'])->name('faq');
@@ -56,8 +56,7 @@ Route::middleware(['throttle:5,1'])->group(function () {
     Route::post('/service-request', [PageController::class, 'submitServiceRequest'])->name('service-request.submit');
 
     Route::post('/blog/{post:slug}/comments', [CommentController::class, 'store'])
-    ->name('comments.store');
-
+        ->name('comments.store');
 });
 
 // ── SEO Routes ──
@@ -120,17 +119,21 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     Route::patch('payments/{payment}/verify', [PaymentAdminController::class, 'verify'])->name('payments.verify');
     Route::patch('payments/{payment}/reject', [PaymentAdminController::class, 'reject'])->name('payments.reject');
 
+    // ── Comment Moderation ──
+    Route::get('comments', [AdminCommentController::class, 'index'])->name('comments.index');
+    Route::get('comments/{comment}', [AdminCommentController::class, 'show'])->name('comments.show');
+    Route::patch('comments/{comment}/approve', [AdminCommentController::class, 'approve'])->name('comments.approve');
+    Route::patch('comments/{comment}/spam', [AdminCommentController::class, 'spam'])->name('comments.spam');
+    Route::patch('comments/{comment}/trash', [AdminCommentController::class, 'trash'])->name('comments.trash');
+    Route::patch('comments/{comment}/restore', [AdminCommentController::class, 'restore'])->name('comments.restore');
+    Route::delete('comments/{comment}', [AdminCommentController::class, 'destroy'])->name('comments.destroy');
+    Route::post('comments/bulk', [AdminCommentController::class, 'bulk'])->name('comments.bulk');
+    Route::post('comments/{comment}/reply', [AdminCommentController::class, 'reply'])->name('comments.reply');
 
-    // Comment Moderation
-Route::get('comments', [AdminCommentController::class, 'index'])->name('comments.index');
-Route::get('comments/{comment}', [AdminCommentController::class, 'show'])->name('comments.show');
-Route::patch('comments/{comment}/approve', [AdminCommentController::class, 'approve'])->name('comments.approve');
-Route::patch('comments/{comment}/spam', [AdminCommentController::class, 'spam'])->name('comments.spam');
-Route::patch('comments/{comment}/trash', [AdminCommentController::class, 'trash'])->name('comments.trash');
-Route::patch('comments/{comment}/restore', [AdminCommentController::class, 'restore'])->name('comments.restore');
-Route::delete('comments/{comment}', [AdminCommentController::class, 'destroy'])->name('comments.destroy');
-Route::post('comments/bulk', [AdminCommentController::class, 'bulk'])->name('comments.bulk');
-Route::post('comments/{comment}/reply', [AdminCommentController::class, 'reply'])->name('comments.reply');
+
+    Route::post('settings/upload-file', [AdminSettingController::class, 'uploadFile'])->name('settings.upload-file');
+Route::post('settings/remove-file', [AdminSettingController::class, 'removeFile'])->name('settings.remove-file');
+
 
 });
 
