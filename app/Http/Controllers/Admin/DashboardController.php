@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Contact;
+use App\Models\PageView;
 use App\Models\Post;
 use App\Models\Project;
 use App\Models\Service;
@@ -30,6 +31,11 @@ class DashboardController extends Controller
             'total_requests' => ServiceRequest::count(),
             'published_posts' => Post::where('status', 'published')->count(),
             'draft_posts' => Post::where('status', 'draft')->count(),
+            'total_page_views' => PageView::count(),
+            'today_page_views' => PageView::whereDate('viewed_at', today())->count(),
+            'this_month_page_views' => PageView::whereMonth('viewed_at', now()->month)
+                ->whereYear('viewed_at', now()->year)
+                ->count(),
         ];
 
         // Contacts per month (last 6 months)
@@ -50,6 +56,24 @@ class DashboardController extends Controller
             ->where('created_at', '>=', Carbon::now()->subMonths(6))
             ->groupBy('month')
             ->orderBy('month')
+            ->get();
+
+        // Page views per day (last 30 days)
+        $pageViewsChart = PageView::select(
+                DB::raw("DATE(viewed_at) as date"),
+                DB::raw('COUNT(*) as count')
+            )
+            ->where('viewed_at', '>=', Carbon::now()->subDays(30))
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+
+        // Top visited pages (last 30 days)
+        $topPages = PageView::select('url', DB::raw('COUNT(*) as views'))
+            ->where('viewed_at', '>=', Carbon::now()->subDays(30))
+            ->groupBy('url')
+            ->orderByDesc('views')
+            ->limit(10)
             ->get();
 
         // Service requests by status
@@ -97,6 +121,8 @@ class DashboardController extends Controller
             'popularServices' => $popularServices,
             'recentPosts' => $recentPosts,
             'totalViews' => $totalViews,
+            'pageViewsChart' => $pageViewsChart,
+            'topPages' => $topPages,
         ]);
     }
 }

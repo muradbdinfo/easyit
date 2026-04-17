@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Middleware;
 
+use App\Models\PageView;
 use App\Models\Service;
 use App\Models\Setting;
 use Illuminate\Http\Request;
@@ -39,6 +40,10 @@ class HandleInertiaRequests extends Middleware
                 'success' => fn() => $request->session()->get('success'),
                 'error' => fn() => $request->session()->get('error'),
             ],
+            // Total page views (cached, synced on increment in middleware)
+            'totalPageViews' => Cache::rememberForever('page_views_total', function () {
+                return PageView::count();
+            }),
         ];
     }
 }

@@ -19,6 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
             \App\Http\Middleware\SecurityHeaders::class,
             \App\Http\Middleware\ForceHttps::class,
+            \App\Http\Middleware\TrackPageView::class,
         ]);
 
         $middleware->alias([
