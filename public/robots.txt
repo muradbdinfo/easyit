@@ -1,10 +1,18 @@
+# robots.txt for Easy IT - AdSense Optimized
 User-agent: *
 Allow: /
-Disallow: /admin/
-Disallow: /dashboard
-Disallow: /login
-Disallow: /register
-Disallow: /password
-Disallow: /profile
 
+# Allow Google AdSense and Mediapartners crawlers
+User-agent: Mediapartners-Google
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+# Disallow admin and client portal areas
+Disallow: /admin/
+Disallow: /client/
+Disallow: /dashboard
+
+# Sitemap
 Sitemap: https://easyit.com.bd/sitemap.xml

@@ -41,6 +41,11 @@ Route::get('/contact', [PageController::class, 'contact'])->name('contact');
 Route::get('/service-request', [PageController::class, 'serviceRequest'])->name('service-request');
 Route::get('/faq', [PageController::class, 'faq'])->name('faq');
 
+// ── AdSense Required Legal Pages ──
+Route::get('/privacy-policy', [PageController::class, 'privacyPolicy'])->name('privacy-policy');
+Route::get('/terms', [PageController::class, 'terms'])->name('terms');
+Route::get('/disclaimer', [PageController::class, 'disclaimer'])->name('disclaimer');
+
 // ── Rate Limited Form Submissions ──
 Route::middleware(['throttle:5,1'])->group(function () {
     Route::post('/contact', [PageController::class, 'submitContact'])->name('contact.submit');

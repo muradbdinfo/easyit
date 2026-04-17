@@ -5,6 +5,8 @@ import Navbar from '@/Components/Public/Navbar.vue'
 import Footer from '@/Components/Public/Footer.vue'
 import WhatsAppButton from '@/Components/Public/WhatsAppButton.vue'
 import BackToTop from '@/Components/Public/BackToTop.vue'
+import CookieConsent from '@/Components/Public/CookieConsent.vue'
+import GoogleAdSense from '@/Components/Public/GoogleAdSense.vue'
 
 const page = usePage()
 const settings = computed(() => page.props.settings || {})
@@ -32,5 +34,7 @@ const flash = computed(() => page.props.flash)
         <Footer />
         <WhatsAppButton :number="settings.whatsapp_number" />
         <BackToTop />
+        <CookieConsent />
+        <GoogleAdSense />
     </div>
 </template>

@@ -44,7 +44,6 @@ class PageController extends Controller
             Mail::to(setting('company_email', 'info@easyit.com.bd'))
                 ->send(new ContactSubmitted($contact));
         } catch (\Exception $e) {
-            // Log but don't fail - contact is saved
             \Log::error('Contact email failed: ' . $e->getMessage());
         }
 
@@ -90,6 +89,29 @@ class PageController extends Controller
                 ->with('service:id,title')
                 ->get()
                 ->groupBy(fn($faq) => $faq->service?->title ?? 'General'),
+        ]);
+    }
+
+    // ── AdSense Required Legal Pages ──
+
+    public function privacyPolicy()
+    {
+        return Inertia::render('Public/PrivacyPolicy', [
+            'lastUpdated' => 'April 17, 2026',
+        ]);
+    }
+
+    public function terms()
+    {
+        return Inertia::render('Public/Terms', [
+            'lastUpdated' => 'April 17, 2026',
+        ]);
+    }
+
+    public function disclaimer()
+    {
+        return Inertia::render('Public/Disclaimer', [
+            'lastUpdated' => 'April 17, 2026',
         ]);
     }
 }
