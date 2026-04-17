@@ -8,6 +8,7 @@ use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Post extends Model implements HasMedia
 {
@@ -56,4 +57,26 @@ class Post extends Model implements HasMedia
     {
         return max(1, (int) ceil(str_word_count(strip_tags($this->body)) / 200));
     }
+
+    public function comments(): HasMany
+{
+    return $this->hasMany(\App\Models\Comment::class);
+}
+ 
+// Only top-level approved comments with nested approved replies
+public function approvedComments(): HasMany
+{
+    return $this->hasMany(\App\Models\Comment::class)
+        ->whereNull('parent_id')
+        ->where('status', 'approved')
+        ->with(['user:id,name,avatar', 'approvedReplies'])
+        ->orderBy('created_at', 'desc');
+}
+ 
+// Count of approved comments (including replies)
+public function getCommentsCountAttribute(): int
+{
+    return $this->comments()->where('status', 'approved')->count();
+}
+
 }

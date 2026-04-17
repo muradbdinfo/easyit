@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Comment;
 use App\Models\Contact;
 use App\Models\PageView;
 use App\Models\Post;
@@ -36,6 +37,11 @@ class DashboardController extends Controller
             'this_month_page_views' => PageView::whereMonth('viewed_at', now()->month)
                 ->whereYear('viewed_at', now()->year)
                 ->count(),
+            // Comment stats
+            'total_comments' => Comment::count(),
+            'pending_comments' => Comment::where('status', 'pending')->count(),
+            'approved_comments' => Comment::where('status', 'approved')->count(),
+            'spam_comments' => Comment::where('status', 'spam')->count(),
         ];
 
         // Contacts per month (last 6 months)
@@ -110,6 +116,12 @@ class DashboardController extends Controller
         // Total blog views
         $totalViews = Post::sum('views');
 
+        // Recent comments
+        $recentComments = Comment::with(['post:id,title,slug', 'user:id,name'])
+            ->latest()
+            ->take(5)
+            ->get();
+
         return Inertia::render('Admin/Dashboard', [
             'stats' => $stats,
             'contactsChart' => $contactsChart,
@@ -123,6 +135,7 @@ class DashboardController extends Controller
             'totalViews' => $totalViews,
             'pageViewsChart' => $pageViewsChart,
             'topPages' => $topPages,
+            'recentComments' => $recentComments,
         ]);
     }
 }

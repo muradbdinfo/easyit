@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use App\Notifications\ResetPasswordNotification;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends Authenticatable
 {
@@ -38,5 +39,13 @@ class User extends Authenticatable
 {
     $this->notify(new ResetPasswordNotification($token));
 }
+
+public function comments(): HasMany
+{
+    return $this->hasMany(Comment::class);
+}
+
+
+
 
 }

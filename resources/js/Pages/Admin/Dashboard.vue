@@ -15,6 +15,7 @@ const props = defineProps({
     popularServices: Array,
     recentPosts: Array,
     totalViews: Number,
+    recentComments: Array,
 })
 
 const user = computed(() => usePage().props.auth?.user)
@@ -74,10 +75,6 @@ const statusColors = {
     new: 'bg-sky-500', read: 'bg-slate-400', replied: 'bg-emerald-500', archived: 'bg-amber-500',
     pending: 'bg-orange-500', reviewing: 'bg-sky-500', quoted: 'bg-violet-500', accepted: 'bg-emerald-500', rejected: 'bg-rose-500',
 }
-const statusDotColors = {
-    new: 'bg-sky-400', read: 'bg-slate-300', replied: 'bg-emerald-400', archived: 'bg-amber-400',
-    pending: 'bg-orange-400', reviewing: 'bg-sky-400', quoted: 'bg-violet-400', accepted: 'bg-emerald-400', rejected: 'bg-rose-400',
-}
 const totalSC = (d) => d?.reduce((s, x) => s + x.count, 0) || 1
 const sPct = (d, s) => { const i = d?.find(x => x.status === s); return i ? Math.round((i.count / totalSC(d)) * 100) : 0 }
 const sCount = (d, s) => d?.find(x => x.status === s)?.count || 0
@@ -101,6 +98,14 @@ const greeting = computed(() => {
     if (h < 17) return 'Good afternoon'
     return 'Good evening'
 })
+
+// Comment status colors
+const commentStatusColor = {
+    pending: 'bg-amber-100 text-amber-700',
+    approved: 'bg-emerald-100 text-emerald-700',
+    spam: 'bg-red-100 text-red-700',
+    trash: 'bg-gray-100 text-gray-500',
+}
 </script>
 
 <template>
@@ -113,6 +118,15 @@ const greeting = computed(() => {
                     <p class="text-xs sm:text-sm text-gray-500 mt-0.5">Here's your business overview</p>
                 </div>
                 <div class="flex gap-2">
+                    <!-- Pending Comments Alert -->
+                    <Link v-if="stats.pending_comments > 0" href="/admin/comments?status=pending"
+                        class="inline-flex items-center gap-1.5 rounded-full bg-amber-50 border border-amber-200 px-3 py-1.5 text-xs font-medium text-amber-700 hover:bg-amber-100 transition">
+                        <span class="relative flex h-2 w-2">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+                        </span>
+                        {{ stats.pending_comments }} pending comment{{ stats.pending_comments > 1 ? 's' : '' }}
+                    </Link>
                     <Link v-if="stats.new_contacts > 0" href="/admin/contacts"
                         class="inline-flex items-center gap-1.5 rounded-full bg-sky-50 border border-sky-200 px-3 py-1.5 text-xs font-medium text-sky-700 hover:bg-sky-100 transition">
                         <span class="relative flex h-2 w-2">
@@ -131,7 +145,7 @@ const greeting = computed(() => {
         </div>
 
         <!-- Stats Grid -->
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 mb-6 sm:mb-8">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3 sm:gap-4 mb-6 sm:mb-8">
             <!-- Services -->
             <Link href="/admin/services" class="group bg-white rounded-2xl border border-gray-100 p-3 sm:p-4 hover:shadow-lg hover:border-gray-200 transition-all duration-300 hover:-translate-y-0.5">
                 <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-indigo-50 flex items-center justify-center mb-2 sm:mb-3 group-hover:bg-indigo-100 group-hover:scale-110 transition-all duration-300">
@@ -160,6 +174,20 @@ const greeting = computed(() => {
                     <span class="text-[10px] text-emerald-600 font-medium">{{ stats.published_posts }} live</span>
                     <span class="text-[10px] text-gray-300">·</span>
                     <span class="text-[10px] text-gray-400">{{ stats.draft_posts }} draft</span>
+                </div>
+            </Link>
+
+            <!-- Comments -->
+            <Link href="/admin/comments" class="group bg-white rounded-2xl border border-gray-100 p-3 sm:p-4 hover:shadow-lg hover:border-gray-200 transition-all duration-300 hover:-translate-y-0.5">
+                <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-pink-50 flex items-center justify-center mb-2 sm:mb-3 group-hover:bg-pink-100 group-hover:scale-110 transition-all duration-300">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5 text-pink-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/></svg>
+                </div>
+                <p class="text-xl sm:text-2xl font-bold text-gray-900 leading-none">{{ animatedStats.total_comments ?? 0 }}</p>
+                <div class="mt-1">
+                    <span v-if="stats.pending_comments > 0" class="inline-flex items-center gap-1 text-[10px] text-amber-600 font-medium">
+                        <span class="w-1 h-1 rounded-full bg-amber-500 animate-pulse"></span> {{ stats.pending_comments }} pending
+                    </span>
+                    <span v-else class="text-[10px] text-gray-400">{{ stats.approved_comments }} approved</span>
                 </div>
             </Link>
 
@@ -273,7 +301,7 @@ const greeting = computed(() => {
         </div>
 
         <!-- Middle Row: Lists -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
             <!-- Recent Contacts -->
             <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
                 <div class="flex justify-between items-center px-4 sm:px-5 py-3 sm:py-4 border-b border-gray-50">
@@ -324,6 +352,40 @@ const greeting = computed(() => {
                     <div v-if="!recentRequests?.length" class="flex flex-col items-center justify-center py-8 sm:py-10 text-gray-400">
                         <svg class="w-8 h-8 mb-2 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
                         <p class="text-xs">No requests yet</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Comments -->
+            <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+                <div class="flex justify-between items-center px-4 sm:px-5 py-3 sm:py-4 border-b border-gray-50">
+                    <h3 class="text-sm font-semibold text-gray-900">Recent Comments</h3>
+                    <Link href="/admin/comments" class="text-[10px] sm:text-xs text-indigo-600 hover:text-indigo-800 font-medium">View All →</Link>
+                </div>
+                <div class="divide-y divide-gray-50 max-h-72 sm:max-h-80 overflow-y-auto">
+                    <Link v-for="cm in recentComments" :key="cm.id" :href="`/admin/comments/${cm.id}`"
+                        class="flex items-start gap-2.5 sm:gap-3 px-4 sm:px-5 py-2.5 sm:py-3 hover:bg-gray-50/80 transition group">
+                        <div class="mt-0.5 shrink-0">
+                            <div :class="[cm.is_admin_reply ? 'bg-indigo-500' : 'bg-gray-400', 'w-6 h-6 rounded-full flex items-center justify-center']">
+                                <span class="text-white text-[9px] font-bold">{{ (cm.user?.name || cm.author_name || 'A').charAt(0).toUpperCase() }}</span>
+                            </div>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <div class="flex justify-between items-center gap-2">
+                                <p class="text-xs sm:text-sm font-medium text-gray-900 truncate">{{ cm.user?.name || cm.author_name || 'Anonymous' }}</p>
+                                <span :class="[commentStatusColor[cm.status], 'text-[9px] px-1.5 py-0.5 rounded-full font-semibold capitalize shrink-0']">{{ cm.status }}</span>
+                            </div>
+                            <p class="text-[11px] sm:text-xs text-gray-500 line-clamp-1 mt-0.5">{{ cm.body }}</p>
+                            <div class="flex items-center gap-1.5 mt-0.5">
+                                <span class="text-[10px] text-gray-400 truncate">{{ cm.post?.title }}</span>
+                                <span class="text-[10px] text-gray-300">·</span>
+                                <span class="text-[10px] text-gray-400 shrink-0">{{ timeAgo(cm.created_at) }}</span>
+                            </div>
+                        </div>
+                    </Link>
+                    <div v-if="!recentComments?.length" class="flex flex-col items-center justify-center py-8 sm:py-10 text-gray-400">
+                        <svg class="w-8 h-8 mb-2 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/></svg>
+                        <p class="text-xs">No comments yet</p>
                     </div>
                 </div>
             </div>
@@ -380,11 +442,12 @@ const greeting = computed(() => {
         <!-- Quick Actions -->
         <div class="bg-white rounded-2xl border border-gray-100 p-4 sm:p-6">
             <h3 class="text-sm font-semibold text-gray-900 mb-3 sm:mb-4">Quick Actions</h3>
-            <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-3">
+            <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-7 gap-2 sm:gap-3">
                 <Link v-for="action in [
                     { href: '/admin/services/create', icon: '⚙️', label: 'Add Service' },
                     { href: '/admin/projects/create', icon: '🗂️', label: 'Add Project' },
                     { href: '/admin/posts/create', icon: '📝', label: 'New Post' },
+                    { href: '/admin/comments?status=pending', icon: '💬', label: 'Moderate' },
                     { href: '/admin/packages/create', icon: '📦', label: 'Add Package' },
                     { href: '/admin/team-members/create', icon: '👤', label: 'Add Member' },
                     { href: '/admin/settings', icon: '🔧', label: 'Settings' },

@@ -24,6 +24,10 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\PageController;
+
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\Admin\CommentController as AdminCommentController;
+
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -50,6 +54,10 @@ Route::get('/disclaimer', [PageController::class, 'disclaimer'])->name('disclaim
 Route::middleware(['throttle:5,1'])->group(function () {
     Route::post('/contact', [PageController::class, 'submitContact'])->name('contact.submit');
     Route::post('/service-request', [PageController::class, 'submitServiceRequest'])->name('service-request.submit');
+
+    Route::post('/blog/{post:slug}/comments', [CommentController::class, 'store'])
+    ->name('comments.store');
+
 });
 
 // ── SEO Routes ──
@@ -111,6 +119,19 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     Route::get('payments', [PaymentAdminController::class, 'index'])->name('payments.index');
     Route::patch('payments/{payment}/verify', [PaymentAdminController::class, 'verify'])->name('payments.verify');
     Route::patch('payments/{payment}/reject', [PaymentAdminController::class, 'reject'])->name('payments.reject');
+
+
+    // Comment Moderation
+Route::get('comments', [AdminCommentController::class, 'index'])->name('comments.index');
+Route::get('comments/{comment}', [AdminCommentController::class, 'show'])->name('comments.show');
+Route::patch('comments/{comment}/approve', [AdminCommentController::class, 'approve'])->name('comments.approve');
+Route::patch('comments/{comment}/spam', [AdminCommentController::class, 'spam'])->name('comments.spam');
+Route::patch('comments/{comment}/trash', [AdminCommentController::class, 'trash'])->name('comments.trash');
+Route::patch('comments/{comment}/restore', [AdminCommentController::class, 'restore'])->name('comments.restore');
+Route::delete('comments/{comment}', [AdminCommentController::class, 'destroy'])->name('comments.destroy');
+Route::post('comments/bulk', [AdminCommentController::class, 'bulk'])->name('comments.bulk');
+Route::post('comments/{comment}/reply', [AdminCommentController::class, 'reply'])->name('comments.reply');
+
 });
 
 // ── Client Portal Routes ──
