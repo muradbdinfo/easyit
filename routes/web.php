@@ -24,12 +24,12 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\PageController;
-
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\Admin\CommentController as AdminCommentController;
-
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+
+
 
 // ── Public Routes ──
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -44,6 +44,9 @@ Route::get('/blog/{post:slug}', [PostController::class, 'show'])->name('blog.sho
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
 Route::get('/service-request', [PageController::class, 'serviceRequest'])->name('service-request');
 Route::get('/faq', [PageController::class, 'faq'])->name('faq');
+
+Route::get('/donate', [PageController::class, 'donate'])->name('donate');
+
 
 // ── AdSense Required Legal Pages ──
 Route::get('/privacy-policy', [PageController::class, 'privacyPolicy'])->name('privacy-policy');
@@ -133,6 +136,7 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
 
     Route::post('settings/upload-file', [AdminSettingController::class, 'uploadFile'])->name('settings.upload-file');
 Route::post('settings/remove-file', [AdminSettingController::class, 'removeFile'])->name('settings.remove-file');
+
 
 
 });

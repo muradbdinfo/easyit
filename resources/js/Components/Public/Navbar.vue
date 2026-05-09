@@ -27,6 +27,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
     <header :class="[scrolled ? 'bg-white/95 backdrop-blur-xl shadow-sm border-b border-gray-100' : 'bg-transparent', 'fixed top-0 left-0 right-0 z-50 transition-all duration-300']">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16 lg:h-20">
+
                 <!-- Logo -->
                 <Link href="/" class="flex items-center gap-2.5 group shrink-0">
                     <template v-if="logoUrl">
@@ -89,8 +90,10 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
                     </Link>
                 </nav>
 
-                <!-- Right side: Auth + CTA -->
+                <!-- Right side: Auth + Donate + CTA + Hamburger -->
                 <div class="flex items-center gap-2 sm:gap-3">
+
+                    <!-- Logged in user -->
                     <template v-if="user">
                         <Link :href="user.is_admin ? '/admin/dashboard' : '/client/dashboard'"
                             :class="[scrolled ? 'text-gray-600 hover:text-brand-600' : 'text-gray-200 hover:text-white', 'hidden sm:inline-flex items-center gap-2 px-3 py-2 text-[13px] font-semibold transition-colors']">
@@ -100,6 +103,8 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
                             {{ user.is_admin ? 'Admin Panel' : 'My Portal' }}
                         </Link>
                     </template>
+
+                    <!-- Not logged in -->
                     <template v-else>
                         <Link href="/login" :class="[scrolled ? 'text-gray-600 hover:text-brand-600' : 'text-gray-200 hover:text-white', 'hidden sm:inline-flex items-center gap-1.5 px-3 py-2 text-[13px] font-semibold transition-colors']">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
@@ -107,11 +112,21 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
                         </Link>
                     </template>
 
+                    <!-- Donate heart icon (desktop) -->
+                    <Link href="/donate" title="Support Us"
+                        :class="[scrolled ? 'text-pink-500 hover:text-pink-600 hover:bg-pink-50' : 'text-pink-400 hover:text-pink-300 hover:bg-white/10', 'hidden sm:inline-flex items-center justify-center w-9 h-9 rounded-xl transition-colors']">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                    </Link>
+
+                    <!-- Get a Quote CTA -->
                     <Link href="/service-request" class="hidden sm:inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand-500 to-brand-600 px-5 py-2.5 text-sm font-semibold text-white hover:from-brand-600 hover:to-brand-700 transition-all shadow-lg shadow-brand-500/25 hover:shadow-brand-500/40 hover:-translate-y-0.5">
                         Get a Quote
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                     </Link>
 
+                    <!-- Mobile hamburger -->
                     <button @click="mobileOpen = !mobileOpen" :class="[scrolled ? 'text-gray-700' : 'text-white', 'lg:hidden p-2 rounded-lg hover:bg-white/10 transition']">
                         <svg v-if="!mobileOpen" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                         <svg v-else class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -124,12 +139,31 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
         <transition enter-active-class="transition duration-200" enter-from-class="opacity-0 -translate-y-2" enter-to-class="opacity-100 translate-y-0" leave-active-class="transition duration-150" leave-from-class="opacity-100" leave-to-class="opacity-0">
             <div v-show="mobileOpen" class="lg:hidden bg-white border-t border-gray-100 shadow-xl">
                 <div class="px-4 py-4 space-y-1">
-                    <Link v-for="item in [{label:'Home',href:'/'},{label:'About',href:'/about'},{label:'Services',href:'/services'},{label:'Portfolio',href:'/projects'},{label:'Blog',href:'/blog'},{label:'FAQ',href:'/faq'},{label:'Contact',href:'/contact'}]"
-                        :key="item.href" :href="item.href" @click="mobileOpen = false"
+
+                    <!-- Nav links -->
+                    <Link v-for="item in [
+                        { label: 'Home', href: '/' },
+                        { label: 'About', href: '/about' },
+                        { label: 'Services', href: '/services' },
+                        { label: 'Portfolio', href: '/projects' },
+                        { label: 'Blog', href: '/blog' },
+                        { label: 'FAQ', href: '/faq' },
+                        { label: 'Contact', href: '/contact' },
+                    ]" :key="item.href" :href="item.href" @click="mobileOpen = false"
                         :class="[isActive(item.href) ? 'text-brand-600 bg-brand-50' : 'text-gray-700 hover:bg-gray-50', 'block px-4 py-2.5 rounded-xl text-sm font-semibold transition']">
                         {{ item.label }}
                     </Link>
 
+                    <!-- Support Us link (mobile) -->
+                    <Link href="/donate" @click="mobileOpen = false"
+                        class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold text-pink-600 hover:bg-pink-50 transition">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                        Support Us
+                    </Link>
+
+                    <!-- Auth section -->
                     <div class="pt-2 border-t border-gray-100 mt-2">
                         <template v-if="user">
                             <Link :href="user.is_admin ? '/admin/dashboard' : '/client/dashboard'" @click="mobileOpen = false"
@@ -152,6 +186,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
                         </template>
                     </div>
 
+                    <!-- Get a Quote CTA -->
                     <Link href="/service-request" @click="mobileOpen = false"
                         class="block mt-2 text-center rounded-xl bg-gradient-to-r from-brand-500 to-brand-600 px-4 py-3 text-sm font-semibold text-white">
                         Get a Quote →

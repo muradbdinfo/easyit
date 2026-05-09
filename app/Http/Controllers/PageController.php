@@ -114,4 +114,16 @@ class PageController extends Controller
             'lastUpdated' => 'April 17, 2026',
         ]);
     }
+
+
+        public function donate()
+{
+    return Inertia::render('Public/Donate', [
+        'seo' => [
+            'title' => 'Support Us | EasyIT',
+            'description' => 'Support EasyIT development with a donation via bKash, Nagad, or bank transfer.',
+        ]
+    ]);
+}
+
 }
